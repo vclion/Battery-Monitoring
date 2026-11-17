@@ -26,7 +26,7 @@ namespace BatteryMonitor.Tests
                 }
                 return 0;
             }
-            BatteryDevice device = BatteryDevice.Decode(Console.ReadLine());
+            BatteryDevice device = BatteryDevice.ReadRequest(Console.OpenStandardInput());
             if (mode == "catalog" && device.Address == "headset") System.Threading.Thread.Sleep(60000);
             Console.WriteLine(ReadingWire.Encode(new BatteryReading(device.Address == "mouse" ? 57 : 80, BatteryStatus.Online, "在线")));
             return 0;
@@ -53,6 +53,17 @@ namespace BatteryMonitor.Tests
             BatteryDevice audio = Device(DeviceSource.MchoseHeadset, "headset", DeviceKind.Audio);
             BatteryDevice clone = BatteryDevice.Decode(mouse.Encode());
             check(clone.Id == mouse.Id && clone.Name == mouse.Name && clone.Address == mouse.Address, "descriptor delimiters and Unicode roundtrip");
+            foreach (bool preamble in new[] { false, true })
+            {
+                using (var input = new MemoryStream())
+                {
+                    using (var writer = new StreamWriter(input, new System.Text.UTF8Encoding(preamble), 1024, true))
+                        writer.WriteLine(mouse.Encode());
+                    input.Position = 0;
+                    BatteryDevice request = BatteryDevice.ReadRequest(input);
+                    check(request.Id == mouse.Id && request.Name == mouse.Name, "worker input handles optional UTF-8 preamble: " + preamble);
+                }
+            }
             check(mouse.Id == BatteryDevice.MakeId(mouse.Source, "MOUSE"), "Windows path identity ignores casing");
             foreach (string line in new[] { "", mouse.Encode().Replace("D1|0|2", "D1|99|2"), mouse.Encode() + "|extra", "D1|0|2|?|||" })
             {

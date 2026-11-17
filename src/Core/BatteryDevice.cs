@@ -42,6 +42,14 @@ namespace BatteryMonitor
                 Pack(Id), Pack(Name), Pack(Address), Pack(ContainerId ?? "") });
         }
 
+        public static BatteryDevice ReadRequest(Stream input)
+        {
+            // Framework's Process.StandardInput can emit a UTF-8 preamble on UTF-8
+            // Windows consoles. Console.ReadLine does not consume that preamble.
+            using (var reader = new StreamReader(input, new UTF8Encoding(false, true), true))
+                return Decode(reader.ReadLine());
+        }
+
         public static BatteryDevice Decode(string line)
         {
             if (line == null || line.Length > 32768) throw new InvalidDataException();

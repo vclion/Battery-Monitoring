@@ -62,7 +62,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\package.ps1
 输出位于 `dist/`，测试及诊断产物位于 `tests/artifacts/`，均已加入忽略规则。
 发布 ZIP 包含 EXE、ICO、README、许可证、第三方声明和文档，不包含本机配置或测试采集。
 另外生成 `dist/BatteryMonitor-source.zip`，包含整理后的源码、脚本、文档、测试源码及 GitHub 配置，可解压后作为仓库上传；不包含 EXE 或本机测试产物。
-GitHub Actions 配置了 Windows 构建、合成数据测试和便携 ZIP 产物；首次远程运行状态需上传后确认。
+GitHub Actions 配置了 Windows 构建、合成数据测试和便携 ZIP 产物；[查看构建状态](https://github.com/vclion/Battery-Monitoring/actions/workflows/windows.yml)。
 
 ## 项目目录与验证
 
