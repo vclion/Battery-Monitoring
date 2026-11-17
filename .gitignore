@@ -1,0 +1,16 @@
+dist/
+tests/**/*.exe
+tests/*.exe
+tests/artifacts/
+*.pdb
+*.user
+*.suo
+.vs/
+**/bin/
+**/obj/
+.env
+.env.*
+!.env.example
+*.log
+Thumbs.db
+.DS_Store

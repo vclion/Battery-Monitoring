@@ -1,0 +1,27 @@
+name: Windows build and tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and run tests without package downloads
+        shell: powershell
+        run: ./scripts/build.ps1 -Test
+      - name: Package portable application
+        shell: powershell
+        run: ./scripts/package.ps1 -SkipBuild
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BatteryMonitor-windows-x64
+          path: dist/*.zip
+          if-no-files-found: error
